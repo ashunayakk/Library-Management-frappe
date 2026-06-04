@@ -1,5 +1,6 @@
 {
  "actions": [],
+ "allow_import": 1,
  "allow_rename": 1,
  "autoname": "field:article_name",
  "creation": "2026-06-02 22:05:34.766416",
@@ -11,7 +12,8 @@
   "image",
   "column_break_ysfa",
   "status",
-  "publisher"
+  "publisher",
+  "publisher_date"
  ],
  "fields": [
   {
@@ -50,13 +52,18 @@
    "fieldname": "publisher",
    "fieldtype": "Data",
    "label": "Publisher"
+  },
+  {
+   "fieldname": "publisher_date",
+   "fieldtype": "Data",
+   "label": "Publication Year"
   }
  ],
  "grid_page_length": 50,
  "index_web_pages_for_search": 1,
  "links": [],
- "modified": "2026-06-03 11:07:00.115019",
- "modified_by": "ashunayak505@gmail.com",
+ "modified": "2026-06-04 15:09:11.802042",
+ "modified_by": "Administrator",
  "module": "Library Management",
  "name": "Article",
  "naming_rule": "By fieldname",

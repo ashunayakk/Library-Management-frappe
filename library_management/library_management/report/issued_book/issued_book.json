@@ -1,0 +1,29 @@
+{
+ "add_total_row": 0,
+ "add_translate_data": 0,
+ "columns": [],
+ "creation": "2026-06-03 12:59:15.425853",
+ "disabled": 0,
+ "docstatus": 0,
+ "doctype": "Report",
+ "filters": [],
+ "idx": 0,
+ "is_standard": "Yes",
+ "letter_head": null,
+ "modified": "2026-06-03 17:54:47.557909",
+ "modified_by": "Administrator",
+ "module": "Library Management",
+ "name": "Issued Book",
+ "owner": "ashunayak505@gmail.com",
+ "prepared_report": 0,
+ "query": "SELECT\n    lt.name AS \"Transaction ID\",\n    lt.article AS \"Book Name\",\n    lt.library_member AS \"Member\",\n    lt.date AS \"Issue Date\",\n    a.status AS \"Status\"\nFROM\n    `tabLibrary Transaction` lt\nLEFT JOIN\n    `tabArticle` a ON a.name = lt.article\nWHERE\n    lt.docstatus = 1\n    AND a.status = 'Issued'\nORDER BY\n    lt.date DESC",
+ "ref_doctype": "Library Transaction",
+ "report_name": "Issued Book",
+ "report_type": "Query Report",
+ "roles": [
+  {
+   "role": "System Manager"
+  }
+ ],
+ "timeout": 0
+}

@@ -1,8 +1,9 @@
 {
  "actions": [],
+ "allow_import": 1,
  "allow_rename": 1,
+ "autoname": "M.###",
  "creation": "2026-06-03 10:09:09.484689",
- "custom": 1,
  "doctype": "DocType",
  "engine": "InnoDB",
  "field_order": [
@@ -42,9 +43,7 @@
   {
    "fieldname": "full_name",
    "fieldtype": "Data",
-   "in_list_view": 1,
    "label": "full Name",
-   "read_only": 1,
    "reqd": 1
   },
   {
@@ -58,10 +57,11 @@
  "grid_page_length": 50,
  "index_web_pages_for_search": 1,
  "links": [],
- "modified": "2026-06-03 11:19:31.043928",
+ "modified": "2026-06-04 15:58:48.218207",
  "modified_by": "Administrator",
  "module": "Library Management",
  "name": "Library Membership",
+ "naming_rule": "Expression",
  "owner": "ashunayak505@gmail.com",
  "permissions": [
   {

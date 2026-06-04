@@ -1,0 +1,106 @@
+{% extends "templates/web.html" %}
+
+{% block title %}Library Books{% endblock %}
+
+{% block page_content %}
+
+<div style="max-width: 900px; margin: 30px auto; font-family: Arial;">
+
+    <!-- Header -->
+    <div style="text-align: center; margin-bottom: 30px;">
+        <h1 style="color: #2c3e50;">📚 Library Books</h1>
+        <p style="color: #7f8c8d;">Total Books: <strong>{{ total }}</strong></p>
+    </div>
+
+    <!-- Search Bar -->
+    <form method="GET" action="/articles">
+        <div style="display: flex; gap: 10px; margin-bottom: 20px;">
+            
+            <!-- Search Input -->
+            <input 
+                type="text" 
+                name="search" 
+                value="{{ search }}"
+                placeholder="Search by book name or author..." 
+                style="flex: 1; padding: 10px; border: 1px solid #ccc; border-radius: 5px; font-size: 14px;"
+            >
+
+            <!-- Status Filter -->
+            <select 
+                name="status"
+                style="padding: 10px; border: 1px solid #ccc; border-radius: 5px; font-size: 14px;"
+            >
+                <option value="">All Books</option>
+                <option value="Available" {% if status == 'Available' %}selected{% endif %}>
+                    Available
+                </option>
+                <option value="Issued" {% if status == 'Issued' %}selected{% endif %}>
+                    Issued
+                </option>
+            </select>
+
+            <!-- Search Button -->
+            <button 
+                type="submit"
+                style="padding: 10px 20px; background: #2c3e50; color: white; border: none; border-radius: 5px; cursor: pointer; font-size: 14px;"
+            >
+                Search
+            </button>
+
+            <!-- Clear Button -->
+            <a 
+                href="/articles"
+                style="padding: 10px 20px; background: #95a5a6; color: white; border-radius: 5px; text-decoration: none; font-size: 14px;"
+            >
+                Clear
+            </a>
+
+        </div>
+    </form>
+
+    <!-- Results -->
+    {% if articles %}
+    <table style="width: 100%; border-collapse: collapse;">
+        <thead>
+            <tr style="background: #2c3e50; color: white;">
+                <th style="padding: 12px; text-align: left;">Book Name</th>
+                <th style="padding: 12px; text-align: left;">Author</th>
+                <th style="padding: 12px; text-align: left;">Publisher</th>
+                <th style="padding: 12px; text-align: center;">Status</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for article in articles %}
+            <tr style="border-bottom: 1px solid #dee2e6; {% if loop.index % 2 == 0 %}background: #f8f9fa;{% endif %}">
+                <td style="padding: 12px; font-weight: bold;">{{ article.name }}</td>
+                <td style="padding: 12px;">{{ article.author or 'N/A' }}</td>
+                <td style="padding: 12px;">{{ article.publisher or 'N/A' }}</td>
+                <td style="padding: 12px; text-align: center;">
+                    <span style="
+                        padding: 4px 12px; 
+                        border-radius: 20px; 
+                        font-size: 12px;
+                        font-weight: bold;
+                        background: {% if article.status == 'Available' %}#d4edda{% else %}#f8d7da{% endif %};
+                        color: {% if article.status == 'Available' %}#155724{% else %}#721c24{% endif %};
+                    ">
+                        {{ article.status }}
+                    </span>
+                </td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+
+    {% else %}
+    <!-- No Results -->
+    <div style="text-align: center; padding: 50px; color: #7f8c8d;">
+        <h3>😕 No books found!</h3>
+        <p>Try a different search term.</p>
+        <a href="/articles" style="color: #2c3e50;">View all books</a>
+    </div>
+    {% endif %}
+
+</div>
+
+{% endblock %}
