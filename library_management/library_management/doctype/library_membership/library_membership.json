@@ -8,11 +8,13 @@
  "engine": "InnoDB",
  "field_order": [
   "library_member",
-  "from_date",
-  "paid",
-  "column_break_joyu",
   "full_name",
-  "to_date"
+  "membership_plan",
+  "column_break_joyu",
+  "from_date",
+  "to_date",
+  "paid",
+  "membership_status"
  ],
  "fields": [
   {
@@ -24,10 +26,35 @@
    "reqd": 1
   },
   {
+   "fieldname": "full_name",
+   "fieldtype": "Data",
+   "label": "Full Name",
+   "read_only": 1
+  },
+  {
+   "fieldname": "membership_plan",
+   "fieldtype": "Select",
+   "in_list_view": 1,
+   "label": "Membership Plan",
+   "options": "Monthly\nQuarterly\nYearly",
+   "reqd": 1
+  },
+  {
+   "fieldname": "column_break_joyu",
+   "fieldtype": "Column Break"
+  },
+  {
    "fieldname": "from_date",
    "fieldtype": "Date",
    "in_list_view": 1,
    "label": "From Date",
+   "reqd": 1
+  },
+  {
+   "fieldname": "to_date",
+   "fieldtype": "Date",
+   "in_list_view": 1,
+   "label": "To Date",
    "reqd": 1
   },
   {
@@ -37,25 +64,17 @@
    "label": "Paid"
   },
   {
-   "fieldname": "column_break_joyu",
-   "fieldtype": "Column Break"
-  },
-  {
-   "fieldname": "full_name",
-   "fieldtype": "Data",
-   "label": "full Name",
-   "reqd": 1
-  },
-  {
-   "fieldname": "to_date",
-   "fieldtype": "Date",
+   "fieldname": "membership_status",
+   "fieldtype": "Select",
    "in_list_view": 1,
-   "label": "To Date",
-   "reqd": 1
+   "label": "Membership Status",
+   "options": "Active\nExpired",
+   "read_only": 1
   }
  ],
  "grid_page_length": 50,
  "index_web_pages_for_search": 1,
+ "is_submittable": 1,
  "links": [],
  "modified": "2026-06-04 15:58:48.218207",
  "modified_by": "Administrator",
@@ -75,6 +94,16 @@
    "role": "System Manager",
    "share": 1,
    "write": 1
+  },
+  {
+   "email": 1,
+   "export": 1,
+   "if_owner": 1,
+   "print": 1,
+   "read": 1,
+   "report": 1,
+   "role": "Library Member",
+   "share": 1
   }
  ],
  "row_format": "Dynamic",

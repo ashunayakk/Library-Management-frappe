@@ -1,0 +1,22 @@
+{
+ "creation": "2026-06-12 17:28:51.700562",
+ "currency": "INR",
+ "docstatus": 0,
+ "doctype": "Number Card",
+ "document_type": "Library Member",
+ "function": "Count",
+ "idx": 0,
+ "is_public": 1,
+ "is_standard": 1,
+ "label": "Total Members",
+ "modified": "2026-06-12 17:28:51.700562",
+ "modified_by": "Administrator",
+ "module": "Library Management",
+ "name": "Total Members",
+ "owner": "Administrator",
+ "report_function": "Sum",
+ "show_full_number": 0,
+ "show_percentage_stats": 1,
+ "stats_time_interval": "Daily",
+ "type": "Document Type"
+}

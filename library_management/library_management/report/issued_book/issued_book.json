@@ -16,7 +16,7 @@
  "name": "Issued Book",
  "owner": "ashunayak505@gmail.com",
  "prepared_report": 0,
- "query": "SELECT\n    lt.name AS \"Transaction ID\",\n    lt.article AS \"Book Name\",\n    lt.library_member AS \"Member\",\n    lt.date AS \"Issue Date\",\n    a.status AS \"Status\"\nFROM\n    `tabLibrary Transaction` lt\nLEFT JOIN\n    `tabArticle` a ON a.name = lt.article\nWHERE\n    lt.docstatus = 1\n    AND a.status = 'Issued'\nORDER BY\n    lt.date DESC",
+ "query": "SELECT\n    lt.name AS \"Transaction ID\",\n    lt.article AS \"Book Name\",\n    lt.library_member AS \"Member\",\n    lt.date AS \"Issue Date\",\n    a.status AS \"Status\"\nFROM\n    `tabLibrary Transaction` lt\nJOIN\n    `tabArticle` a ON a.name = lt.article\nWHERE\n    lt.docstatus = 1\n    AND lt.type = 'Issue'\n    AND a.status = 'Issued'\nORDER BY\n    lt.date DESC",
  "ref_doctype": "Library Transaction",
  "report_name": "Issued Book",
  "report_type": "Query Report",

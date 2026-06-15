@@ -1,29 +1,54 @@
 import frappe
 
 def get_context(context):
-    # Search query
     search = frappe.form_dict.get("search", "")
     status = frappe.form_dict.get("status", "")
+    reserved = frappe.form_dict.get("reserved", "")
+    context.success = ""
+    context.error = ""
+    context.no_cache = 1
 
-    # Filters
+    # Reserve karo
+    if frappe.request.method == "POST":
+        article = frappe.form_dict.get("article", "")
+        member_name = frappe.form_dict.get("member_name", "")
+        member_email = frappe.form_dict.get("member_email", "")
+
+        try:
+            # Check already reserved
+            exists = frappe.db.exists("Books Reservation", {
+                "article": article,
+                "status": "Pending"
+            })
+
+            if exists:
+                context.error = f"'{article}' already reserved hai!"
+            else:
+                frappe.set_user("Administrator")
+                reservation = frappe.new_doc("Books Reservation")
+                reservation.article = article
+                reservation.member_name = member_name
+                reservation.member_email = member_email
+                reservation.status = "Pending"
+                reservation.date = frappe.utils.getdate()
+                reservation.insert(ignore_permissions=True)
+                frappe.db.commit()
+                context.success = f"'{article}' successfully reserved!"
+        except Exception as e:
+            context.error = f"Error: {str(e)}"
+
+    # Articles fetch karo
     filters = {}
     if status:
         filters["status"] = status
 
-    # Articles fetch karo
     if search:
         context.articles = frappe.db.sql("""
             SELECT name, author, publisher, status
             FROM `tabArticle`
-            WHERE (name LIKE %(search)s 
-            OR author LIKE %(search)s)
-            {status_filter}
+            WHERE (name LIKE %(search)s OR author LIKE %(search)s)
             ORDER BY name ASC
-        """.format(
-            status_filter=f"AND status = '{status}'" if status else ""
-        ), {
-            "search": f"%{search}%"
-        }, as_dict=True)
+        """, {"search": f"%{search}%"}, as_dict=True)
     else:
         context.articles = frappe.get_list(
             "Article",

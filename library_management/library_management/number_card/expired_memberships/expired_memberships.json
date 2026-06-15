@@ -1,0 +1,23 @@
+{
+ "creation": "2026-06-12 17:28:51.726525",
+ "currency": "INR",
+ "docstatus": 0,
+ "doctype": "Number Card",
+ "document_type": "Library Membership",
+ "filters_json": "{\"membership_status\": \"Expired\"}",
+ "function": "Count",
+ "idx": 0,
+ "is_public": 1,
+ "is_standard": 1,
+ "label": "Expired Memberships",
+ "modified": "2026-06-12 17:28:51.726525",
+ "modified_by": "Administrator",
+ "module": "Library Management",
+ "name": "Expired Memberships",
+ "owner": "Administrator",
+ "report_function": "Sum",
+ "show_full_number": 0,
+ "show_percentage_stats": 1,
+ "stats_time_interval": "Daily",
+ "type": "Document Type"
+}

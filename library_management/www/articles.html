@@ -1,35 +1,115 @@
 {% extends "templates/web.html" %}
-
 {% block title %}Library Books{% endblock %}
-
 {% block page_content %}
 
-<div style="max-width: 900px; margin: 30px auto; font-family: Arial;">
+<style>
+    .container { max-width: 1000px; margin: 30px auto; padding: 0 20px; }
+    .header { text-align: center; margin-bottom: 30px; }
+    .header h1 { color: #2c3e50; font-size: 32px; }
+    .search-form { display: flex; gap: 10px; margin-bottom: 20px; flex-wrap: wrap; }
+    .search-form input {
+        flex: 1; padding: 10px 15px;
+        border: 2px solid #e0e0e0; border-radius: 25px;
+        font-size: 14px; outline: none; min-width: 200px;
+    }
+    .search-form select {
+        padding: 10px 15px; border: 2px solid #e0e0e0;
+        border-radius: 25px; font-size: 14px; outline: none;
+    }
+    .btn {
+        padding: 10px 20px; border: none;
+        border-radius: 25px; cursor: pointer;
+        font-size: 14px; font-weight: bold;
+        text-decoration: none; display: inline-block;
+    }
+    .btn-primary { background: #667eea; color: white; }
+    .btn-gray { background: #95a5a6; color: white; }
+    .btn-reserve {
+        background: linear-gradient(135deg, #667eea, #764ba2);
+        color: white; padding: 6px 15px;
+        border: none; border-radius: 20px;
+        cursor: pointer; font-size: 12px;
+        font-weight: bold;
+    }
+    .btn-reserve-disabled {
+        background: #ccc; color: #666;
+        padding: 6px 15px; border: none;
+        border-radius: 20px; font-size: 12px;
+    }
+    table { width: 100%; border-collapse: collapse; background: white;
+            border-radius: 15px; overflow: hidden;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.08); }
+    thead tr { background: #2c3e50; color: white; }
+    th, td { padding: 12px 15px; text-align: left; }
+    tbody tr:nth-child(even) { background: #f8f9fa; }
+    tbody tr:hover { background: #e8f4fd; }
+    .badge-available {
+        background: #d4edda; color: #155724;
+        padding: 4px 12px; border-radius: 20px;
+        font-size: 12px; font-weight: bold;
+    }
+    .badge-issued {
+        background: #f8d7da; color: #721c24;
+        padding: 4px 12px; border-radius: 20px;
+        font-size: 12px; font-weight: bold;
+    }
+    .success-msg {
+        background: #d4edda; color: #155724;
+        padding: 15px; border-radius: 10px;
+        margin-bottom: 20px; text-align: center;
+        font-weight: bold;
+    }
+    .error-msg {
+        background: #f8d7da; color: #721c24;
+        padding: 15px; border-radius: 10px;
+        margin-bottom: 20px; text-align: center;
+    }
+    .modal-overlay {
+        display: none; position: fixed;
+        top: 0; left: 0; width: 100%; height: 100%;
+        background: rgba(0,0,0,0.5); z-index: 1000;
+        justify-content: center; align-items: center;
+    }
+    .modal-box {
+        background: white; padding: 30px;
+        border-radius: 15px; max-width: 400px;
+        width: 90%;
+    }
+    .modal-box h3 { margin-bottom: 20px; color: #2c3e50; }
+    .modal-box input {
+        width: 100%; padding: 10px 15px;
+        border: 2px solid #e0e0e0; border-radius: 10px;
+        margin-bottom: 15px; font-size: 14px; outline: none;
+    }
+    .modal-buttons { display: flex; gap: 10px; }
+    .btn-cancel-modal {
+        background: #95a5a6; color: white;
+        padding: 10px 20px; border: none;
+        border-radius: 10px; cursor: pointer;
+        font-size: 14px;
+    }
+</style>
 
-    <!-- Header -->
-    <div style="text-align: center; margin-bottom: 30px;">
-        <h1 style="color: #2c3e50;">📚 Library Books</h1>
-        <p style="color: #7f8c8d;">Total Books: <strong>{{ total }}</strong></p>
+<div class="container">
+    <div class="header">
+        <h1>📚 Library Books</h1>
+        <p style="color: #666;">Total: <strong>{{ total }}</strong> books</p>
     </div>
 
-    <!-- Search Bar -->
-    <form method="GET" action="/articles">
-        <div style="display: flex; gap: 10px; margin-bottom: 20px;">
-            
-            <!-- Search Input -->
-            <input 
-                type="text" 
-                name="search" 
-                value="{{ search }}"
-                placeholder="Search by book name or author..." 
-                style="flex: 1; padding: 10px; border: 1px solid #ccc; border-radius: 5px; font-size: 14px;"
-            >
+    {% if success %}
+    <div class="success-msg">✅ {{ success }}</div>
+    {% endif %}
 
-            <!-- Status Filter -->
-            <select 
-                name="status"
-                style="padding: 10px; border: 1px solid #ccc; border-radius: 5px; font-size: 14px;"
-            >
+    {% if error %}
+    <div class="error-msg">❌ {{ error }}</div>
+    {% endif %}
+
+    <!-- Search -->
+    <form method="GET" action="/articles">
+        <div class="search-form">
+            <input type="text" name="search" value="{{ search }}"
+                   placeholder="Search by book name or author...">
+            <select name="status">
                 <option value="">All Books</option>
                 <option value="Available" {% if status == 'Available' %}selected{% endif %}>
                     Available
@@ -38,69 +118,90 @@
                     Issued
                 </option>
             </select>
-
-            <!-- Search Button -->
-            <button 
-                type="submit"
-                style="padding: 10px 20px; background: #2c3e50; color: white; border: none; border-radius: 5px; cursor: pointer; font-size: 14px;"
-            >
-                Search
-            </button>
-
-            <!-- Clear Button -->
-            <a 
-                href="/articles"
-                style="padding: 10px 20px; background: #95a5a6; color: white; border-radius: 5px; text-decoration: none; font-size: 14px;"
-            >
-                Clear
-            </a>
-
+            <button type="submit" class="btn btn-primary">Search</button>
+            <a href="/articles" class="btn btn-gray">Clear</a>
         </div>
     </form>
 
-    <!-- Results -->
+    <!-- Books Table -->
     {% if articles %}
-    <table style="width: 100%; border-collapse: collapse;">
+    <table>
         <thead>
-            <tr style="background: #2c3e50; color: white;">
-                <th style="padding: 12px; text-align: left;">Book Name</th>
-                <th style="padding: 12px; text-align: left;">Author</th>
-                <th style="padding: 12px; text-align: left;">Publisher</th>
-                <th style="padding: 12px; text-align: center;">Status</th>
+            <tr>
+                <th>Book Name</th>
+                <th>Author</th>
+                <th>Publisher</th>
+                <th>Status</th>
+                <th>Action</th>
             </tr>
         </thead>
         <tbody>
             {% for article in articles %}
-            <tr style="border-bottom: 1px solid #dee2e6; {% if loop.index % 2 == 0 %}background: #f8f9fa;{% endif %}">
-                <td style="padding: 12px; font-weight: bold;">{{ article.name }}</td>
-                <td style="padding: 12px;">{{ article.author or 'N/A' }}</td>
-                <td style="padding: 12px;">{{ article.publisher or 'N/A' }}</td>
-                <td style="padding: 12px; text-align: center;">
-                    <span style="
-                        padding: 4px 12px; 
-                        border-radius: 20px; 
-                        font-size: 12px;
-                        font-weight: bold;
-                        background: {% if article.status == 'Available' %}#d4edda{% else %}#f8d7da{% endif %};
-                        color: {% if article.status == 'Available' %}#155724{% else %}#721c24{% endif %};
-                    ">
+            <tr>
+                <td><strong>{{ article.name }}</strong></td>
+                <td>{{ article.author or 'N/A' }}</td>
+                <td>{{ article.publisher or 'N/A' }}</td>
+                <td>
+                    <span class="{% if article.status == 'Available' %}badge-available{% else %}badge-issued{% endif %}">
                         {{ article.status }}
                     </span>
+                </td>
+                <td>
+                    {% if article.status == 'Issued' %}
+                    <button class="btn-reserve"
+                        onclick="openReserve('{{ article.name }}')">
+                        📌 Reserve
+                    </button>
+                    {% else %}
+                    <span class="btn-reserve-disabled">✅ Available</span>
+                    {% endif %}
                 </td>
             </tr>
             {% endfor %}
         </tbody>
     </table>
-
     {% else %}
-    <!-- No Results -->
-    <div style="text-align: center; padding: 50px; color: #7f8c8d;">
+    <div style="text-align:center; padding:50px; color:#666;">
         <h3>😕 No books found!</h3>
-        <p>Try a different search term.</p>
-        <a href="/articles" style="color: #2c3e50;">View all books</a>
+        <a href="/articles">View all books</a>
     </div>
     {% endif %}
-
 </div>
+
+<!-- Reserve Modal -->
+<div class="modal-overlay" id="reserveModal">
+    <div class="modal-box">
+        <h3>📌 Reserve Book</h3>
+        <p id="modal-book-name" style="color:#667eea; font-weight:bold; margin-bottom:15px;"></p>
+        <form method="POST" action="/articles">
+            <input type="hidden" name="article" id="modal-article">
+            <input type="text" name="member_name"
+                   placeholder="Your Name *" required>
+            <input type="email" name="member_email"
+                   placeholder="Your Email *" required>
+            <div class="modal-buttons">
+                <button type="submit" class="btn-reserve">
+                    ✅ Confirm Reserve
+                </button>
+                <button type="button" class="btn-cancel-modal"
+                        onclick="closeReserve()">
+                    Cancel
+                </button>
+            </div>
+        </form>
+    </div>
+</div>
+
+<script>
+function openReserve(bookName) {
+    document.getElementById('modal-article').value = bookName;
+    document.getElementById('modal-book-name').textContent = '📚 ' + bookName;
+    document.getElementById('reserveModal').style.display = 'flex';
+}
+
+function closeReserve() {
+    document.getElementById('reserveModal').style.display = 'none';
+}
+</script>
 
 {% endblock %}

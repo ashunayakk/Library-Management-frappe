@@ -1,0 +1,23 @@
+{
+ "creation": "2026-06-12 17:28:51.712706",
+ "currency": "INR",
+ "docstatus": 0,
+ "doctype": "Number Card",
+ "document_type": "Library Membership",
+ "filters_json": "[[\"Library Membership\", \"to_date\", \">=\", \"Today\"]]",
+ "function": "Count",
+ "idx": 0,
+ "is_public": 1,
+ "is_standard": 1,
+ "label": "Active Memberships",
+ "modified": "2026-06-12 17:28:51.712706",
+ "modified_by": "Administrator",
+ "module": "Library Management",
+ "name": "Active Memberships",
+ "owner": "Administrator",
+ "report_function": "Sum",
+ "show_full_number": 0,
+ "show_percentage_stats": 1,
+ "stats_time_interval": "Daily",
+ "type": "Document Type"
+}

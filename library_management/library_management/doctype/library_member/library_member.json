@@ -8,11 +8,13 @@
  "engine": "InnoDB",
  "field_order": [
   "first_name",
-  "email",
-  "membership_expiry",
-  "column_break_mlwd",
   "last_name",
-  "phone"
+  "email",
+  "phone",
+  "column_break_mlwd",
+  "address",
+  "membership_expiry",
+  "user"
  ],
  "fields": [
   {
@@ -23,6 +25,11 @@
    "reqd": 1
   },
   {
+   "fieldname": "last_name",
+   "fieldtype": "Data",
+   "label": "Last Name"
+  },
+  {
    "fieldname": "email",
    "fieldtype": "Data",
    "in_list_view": 1,
@@ -30,25 +37,33 @@
    "reqd": 1
   },
   {
-   "fieldname": "membership_expiry",
-   "fieldtype": "Date",
-   "label": "Membership Expiry"
+   "fieldname": "phone",
+   "fieldtype": "Phone",
+   "in_list_view": 1,
+   "label": "Phone",
+   "reqd": 1
   },
   {
    "fieldname": "column_break_mlwd",
    "fieldtype": "Column Break"
   },
   {
-   "fieldname": "last_name",
-   "fieldtype": "Data",
-   "label": "Last Name"
+   "fieldname": "address",
+   "fieldtype": "Small Text",
+   "label": "Address"
   },
   {
-   "fieldname": "phone",
-   "fieldtype": "Phone",
-   "in_list_view": 1,
-   "label": "Phone",
-   "reqd": 1
+   "fieldname": "membership_expiry",
+   "fieldtype": "Date",
+   "label": "Membership Expiry",
+   "read_only": 1
+  },
+  {
+   "fieldname": "user",
+   "fieldtype": "Link",
+   "label": "User",
+   "options": "User",
+   "read_only": 1
   }
  ],
  "grid_page_length": 50,
@@ -72,6 +87,16 @@
    "role": "System Manager",
    "share": 1,
    "write": 1
+  },
+  {
+   "email": 1,
+   "export": 1,
+   "if_owner": 1,
+   "print": 1,
+   "read": 1,
+   "report": 1,
+   "role": "Library Member",
+   "share": 1
   }
  ],
  "row_format": "Dynamic",

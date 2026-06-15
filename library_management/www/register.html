@@ -1,0 +1,128 @@
+{% extends "templates/web.html" %}
+{% block title %}Join Library{% endblock %}
+{% block page_content %}
+
+<style>
+    .register-container {
+        max-width: 500px;
+        margin: 50px auto;
+        padding: 40px;
+        background: white;
+        border-radius: 20px;
+        box-shadow: 0 10px 40px rgba(0,0,0,0.1);
+    }
+    .register-title {
+        text-align: center;
+        font-size: 28px;
+        color: #2c3e50;
+        margin-bottom: 30px;
+    }
+    .form-group {
+        margin-bottom: 20px;
+    }
+    .form-group label {
+        display: block;
+        color: #555;
+        margin-bottom: 8px;
+        font-weight: bold;
+        font-size: 14px;
+    }
+    .form-group input {
+        width: 100%;
+        padding: 12px 15px;
+        border: 2px solid #e0e0e0;
+        border-radius: 10px;
+        font-size: 15px;
+        outline: none;
+    }
+    .form-group input:focus {
+        border-color: #667eea;
+    }
+    .submit-btn {
+        width: 100%;
+        padding: 14px;
+        background: linear-gradient(135deg, #667eea, #764ba2);
+        color: white;
+        border: none;
+        border-radius: 10px;
+        font-size: 16px;
+        font-weight: bold;
+        cursor: pointer;
+    }
+    .success-msg {
+        background: #d4edda;
+        color: #155724;
+        padding: 15px;
+        border-radius: 10px;
+        text-align: center;
+        margin-bottom: 20px;
+        font-weight: bold;
+    }
+    .error-msg {
+        background: #f8d7da;
+        color: #721c24;
+        padding: 15px;
+        border-radius: 10px;
+        text-align: center;
+        margin-bottom: 20px;
+    }
+</style>
+
+<div style="background: linear-gradient(135deg, #667eea, #764ba2); min-height: 60vh; padding: 40px 20px;">
+    <div class="register-container">
+        <h2 class="register-title">👤 Join Our Library</h2>
+
+        {% if success %}
+        <div class="success-msg">
+            🎉 Registration Successful! Welcome {{ member_name }}!
+            <br><br>
+            <a href="/articles" style="color: #155724;">Browse Books →</a>
+        </div>
+        {% else %}
+
+        {% if error %}
+        <div class="error-msg">❌ {{ error }}</div>
+        {% endif %}
+
+        <form method="POST" action="/register">
+            <div class="form-group">
+                <label>First Name *</label>
+                <input type="text" name="first_name"
+                       placeholder="Enter first name" required>
+            </div>
+            <div class="form-group">
+                <label>Last Name</label>
+                <input type="text" name="last_name"
+                       placeholder="Enter last name">
+            </div>
+            <div class="form-group">
+                <label>Email *</label>
+                <input type="email" name="email"
+                       placeholder="Enter email" required>
+            </div>
+            <div class="form-group">
+                <label>Phone *</label>
+                <div style="display: flex; gap: 10px;">
+                    <select name="country_code" style="width: 100px; padding: 12px; border: 2px solid #e0e0e0; border-radius: 10px; outline: none; background: white;" required>
+                        <option value="+91">+91 (IN)</option>
+                        <option value="+1">+1 (US)</option>
+                        <option value="+44">+44 (UK)</option>
+                        <option value="+971">+971 (UAE)</option>
+                    </select>
+                    <input type="text" name="phone" placeholder="Enter phone number" required style="flex: 1;">
+                </div>
+            </div>
+            <button type="submit" class="submit-btn">
+                🎉 Register Now
+            </button>
+        </form>
+
+        <div style="text-align:center; margin-top:20px;">
+            <a href="/articles" style="color:#667eea;">← Back to Books</a>
+        </div>
+
+        {% endif %}
+    </div>
+</div>
+
+{% endblock %}
