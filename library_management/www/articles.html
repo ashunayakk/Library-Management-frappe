@@ -36,6 +36,11 @@
         padding: 6px 15px; border: none;
         border-radius: 20px; font-size: 12px;
     }
+    .badge-reserved {
+        background: #fff3cd; color: #856404;
+        padding: 4px 12px; border-radius: 20px;
+        font-size: 12px; font-weight: bold;
+    }
     table { width: 100%; border-collapse: collapse; background: white;
             border-radius: 15px; overflow: hidden;
             box-shadow: 0 4px 15px rgba(0,0,0,0.08); }
@@ -76,11 +81,6 @@
         width: 90%;
     }
     .modal-box h3 { margin-bottom: 20px; color: #2c3e50; }
-    .modal-box input {
-        width: 100%; padding: 10px 15px;
-        border: 2px solid #e0e0e0; border-radius: 10px;
-        margin-bottom: 15px; font-size: 14px; outline: none;
-    }
     .modal-buttons { display: flex; gap: 10px; }
     .btn-cancel-modal {
         background: #95a5a6; color: white;
@@ -111,12 +111,9 @@
                    placeholder="Search by book name or author...">
             <select name="status">
                 <option value="">All Books</option>
-                <option value="Available" {% if status == 'Available' %}selected{% endif %}>
-                    Available
-                </option>
-                <option value="Issued" {% if status == 'Issued' %}selected{% endif %}>
-                    Issued
-                </option>
+                <option value="Available" {% if status == 'Available' %}selected{% endif %}>Available</option>
+                <option value="Issued" {% if status == 'Issued' %}selected{% endif %}>Issued</option>
+                <option value="Reserved" {% if status == 'Reserved' %}selected{% endif %}>Reserved</option>
             </select>
             <button type="submit" class="btn btn-primary">Search</button>
             <a href="/articles" class="btn btn-gray">Clear</a>
@@ -142,16 +139,21 @@
                 <td>{{ article.author or 'N/A' }}</td>
                 <td>{{ article.publisher or 'N/A' }}</td>
                 <td>
-                    <span class="{% if article.status == 'Available' %}badge-available{% else %}badge-issued{% endif %}">
+                    <span class="{% if article.status == 'Available' %}badge-available{% elif article.status == 'Reserved' %}badge-reserved{% else %}badge-issued{% endif %}">
                         {{ article.status }}
                     </span>
                 </td>
                 <td>
-                    {% if article.status == 'Issued' %}
-                    <button class="btn-reserve"
-                        onclick="openReserve('{{ article.name }}')">
-                        📌 Reserve
-                    </button>
+                    {% if article.status in ['Issued', 'Reserved'] %}
+                        {% if is_logged_in and current_member %}
+                        <button class="btn-reserve"
+                            onclick="openReserve('{{ article.name }}')">
+                            📌 Reserve
+                        </button>
+                        {% else %}
+                        <a href="/login?redirect-to=/articles" class="btn-reserve"
+                           style="text-decoration:none;">🔒 Login to Reserve</a>
+                        {% endif %}
                     {% else %}
                     <span class="btn-reserve-disabled">✅ Available</span>
                     {% endif %}
@@ -166,19 +168,33 @@
         <a href="/articles">View all books</a>
     </div>
     {% endif %}
+
+    {% if total_pages > 1 %}
+    <div style="display:flex; justify-content:center; align-items:center; gap:10px; margin-top:30px; flex-wrap:wrap;">
+        {% if has_prev %}
+        <a href="/articles?page={{ page - 1 }}&search={{ search }}&status={{ status }}"
+           class="btn btn-gray">← Prev</a>
+        {% endif %}
+        <span style="color:#666; font-size:14px;">Page {{ page }} of {{ total_pages }} ({{ total }} books)</span>
+        {% if has_next %}
+        <a href="/articles?page={{ page + 1 }}&search={{ search }}&status={{ status }}"
+           class="btn btn-primary">Next →</a>
+        {% endif %}
+    </div>
+    {% endif %}
 </div>
 
 <!-- Reserve Modal -->
 <div class="modal-overlay" id="reserveModal">
     <div class="modal-box">
         <h3>📌 Reserve Book</h3>
-        <p id="modal-book-name" style="color:#667eea; font-weight:bold; margin-bottom:15px;"></p>
+        <p id="modal-book-name" style="color:#667eea; font-weight:bold; margin-bottom:10px;"></p>
+        <p style="color:#666; font-size:13px; margin-bottom:20px;">
+            You will be added to the reservation queue. We will notify you when the book is available.
+        </p>
         <form method="POST" action="/articles">
             <input type="hidden" name="article" id="modal-article">
-            <input type="text" name="member_name"
-                   placeholder="Your Name *" required>
-            <input type="email" name="member_email"
-                   placeholder="Your Email *" required>
+            <input type="hidden" name="csrf_token" value="{{ csrf_token }}">
             <div class="modal-buttons">
                 <button type="submit" class="btn-reserve">
                     ✅ Confirm Reserve

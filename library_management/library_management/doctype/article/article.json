@@ -8,12 +8,14 @@
  "engine": "InnoDB",
  "field_order": [
   "article_name",
+  "isbn",
   "author",
   "image",
   "column_break_ysfa",
   "status",
   "publisher",
-  "publisher_date"
+  "publisher_date",
+  "description"
  ],
  "fields": [
   {
@@ -23,6 +25,12 @@
    "label": "Article Name",
    "reqd": 1,
    "unique": 1
+  },
+  {
+   "fieldname": "isbn",
+   "fieldtype": "Data",
+   "label": "ISBN",
+   "search_index": 1
   },
   {
    "fieldname": "author",
@@ -55,8 +63,13 @@
   },
   {
    "fieldname": "publisher_date",
-   "fieldtype": "Data",
+   "fieldtype": "Int",
    "label": "Publication Year"
+  },
+  {
+   "fieldname": "description",
+   "fieldtype": "Text Editor",
+   "label": "Description"
   }
  ],
  "grid_page_length": 50,

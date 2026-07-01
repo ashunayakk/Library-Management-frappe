@@ -14,6 +14,8 @@
   "library_member",
   "date",
   "fine_amount",
+  "fine_paid",
+  "fine_paid_date",
   "published",
   "route"
  ],
@@ -72,6 +74,18 @@
    "print_hide": 1,
    "read_only": 1,
    "search_index": 1
+  },
+  {
+   "default": "0",
+   "fieldname": "fine_paid",
+   "fieldtype": "Check",
+   "label": "Fine Paid"
+  },
+  {
+   "depends_on": "fine_paid",
+   "fieldname": "fine_paid_date",
+   "fieldtype": "Date",
+   "label": "Fine Paid Date"
   },
   {
    "default": "0",

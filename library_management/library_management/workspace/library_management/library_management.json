@@ -9,7 +9,7 @@
    "label": "Monthly Transaction Trend"
   }
  ],
- "content": "[{\"id\":\"bb50d8ba\",\"type\":\"header\",\"data\":{\"text\":\"<span class=\\\"h4\\\">Quick Actions</span>\",\"col\":12}},{\"id\":\"d69f096a\",\"type\":\"shortcut\",\"data\":{\"shortcut_name\":\"\ud83d\udcda Add Book\",\"col\":3}},{\"id\":\"8ea0ecf4\",\"type\":\"shortcut\",\"data\":{\"shortcut_name\":\"\ud83d\udc64 Add Member\",\"col\":3}},{\"id\":\"1e1bdbdf\",\"type\":\"shortcut\",\"data\":{\"shortcut_name\":\"\ud83c\udfab Add Membership\",\"col\":3}},{\"id\":\"15ec6571\",\"type\":\"shortcut\",\"data\":{\"shortcut_name\":\"\ud83d\udd04 Issue / Return Book\",\"col\":3}},{\"id\":\"be457482\",\"type\":\"header\",\"data\":{\"text\":\"<span class=\\\"h4\\\">Key Metrics</span>\",\"col\":12}},{\"id\":\"20f22604\",\"type\":\"number_card\",\"data\":{\"number_card_name\":\"Total Books\",\"col\":4}},{\"id\":\"e347c8a1\",\"type\":\"number_card\",\"data\":{\"number_card_name\":\"Total Available Books\",\"col\":4}},{\"id\":\"ee5ea45d\",\"type\":\"number_card\",\"data\":{\"number_card_name\":\"Total Issued Books\",\"col\":4}},{\"id\":\"46a00cc4\",\"type\":\"number_card\",\"data\":{\"number_card_name\":\"Total Members\",\"col\":4}},{\"id\":\"5b6f3c12\",\"type\":\"number_card\",\"data\":{\"number_card_name\":\"Active Memberships\",\"col\":4}},{\"id\":\"66ab18ef\",\"type\":\"number_card\",\"data\":{\"number_card_name\":\"Expired Memberships\",\"col\":4}},{\"id\":\"763e5ef8\",\"type\":\"number_card\",\"data\":{\"number_card_name\":\"Pending Reservations\",\"col\":4}},{\"id\":\"09a7c3b0\",\"type\":\"number_card\",\"data\":{\"number_card_name\":\"Overdue Books\",\"col\":4}},{\"id\":\"425118bf\",\"type\":\"header\",\"data\":{\"text\":\"<span class=\\\"h4\\\">Reports</span>\",\"col\":12}},{\"id\":\"6003d0a5\",\"type\":\"shortcut\",\"data\":{\"shortcut_name\":\"Pending Reservations Report\",\"col\":3}},{\"id\":\"68606b43\",\"type\":\"shortcut\",\"data\":{\"shortcut_name\":\"Books to Issue Report\",\"col\":3}},{\"id\":\"68b17711\",\"type\":\"shortcut\",\"data\":{\"shortcut_name\":\"Overdue Books Report\",\"col\":3}},{\"id\":\"dc6b6848\",\"type\":\"shortcut\",\"data\":{\"shortcut_name\":\"Active Memberships Report\",\"col\":3}},{\"id\":\"18a3470e\",\"type\":\"shortcut\",\"data\":{\"shortcut_name\":\"Expired Memberships Report\",\"col\":3}},{\"id\":\"54a9891a\",\"type\":\"shortcut\",\"data\":{\"shortcut_name\":\"Membership Expiring Soon Report\",\"col\":3}},{\"id\":\"1e973ac7\",\"type\":\"shortcut\",\"data\":{\"shortcut_name\":\"Library Master Summary Report\",\"col\":3}},{\"id\":\"5fFmm15I2-\",\"type\":\"shortcut\",\"data\":{\"shortcut_name\":\"Website\",\"col\":3}},{\"id\":\"c92cc50d\",\"type\":\"header\",\"data\":{\"text\":\"<span class=\\\"h4\\\">Analytics</span>\",\"col\":12}},{\"id\":\"62733961\",\"type\":\"chart\",\"data\":{\"chart_name\":\"Membership Status\",\"col\":6}},{\"id\":\"d778a62d\",\"type\":\"chart\",\"data\":{\"chart_name\":\"Monthly Transaction Trend\",\"col\":6}}]",
+ "content": "[{\"id\":\"480826db\",\"type\":\"header\",\"data\":{\"text\":\"<span class=\\\"h4\\\">Quick Actions</span>\",\"col\":12}},{\"id\":\"a97c7dbc\",\"type\":\"shortcut\",\"data\":{\"shortcut_name\":\"\\ud83d\\udcda Add Book\",\"col\":3}},{\"id\":\"43e479b7\",\"type\":\"shortcut\",\"data\":{\"shortcut_name\":\"\\ud83d\\udc64 Add Member\",\"col\":3}},{\"id\":\"1cc6f68a\",\"type\":\"shortcut\",\"data\":{\"shortcut_name\":\"\\ud83c\\udfab Add Membership\",\"col\":3}},{\"id\":\"a8b9619f\",\"type\":\"shortcut\",\"data\":{\"shortcut_name\":\"\\ud83d\\udd04 Issue / Return Book\",\"col\":3}},{\"id\":\"71b15f10\",\"type\":\"header\",\"data\":{\"text\":\"<span class=\\\"h4\\\">Book Overview</span>\",\"col\":12}},{\"id\":\"d39c97d8\",\"type\":\"number_card\",\"data\":{\"number_card_name\":\"Total Books\",\"col\":3}},{\"id\":\"715f363d\",\"type\":\"number_card\",\"data\":{\"number_card_name\":\"Total Available Books\",\"col\":3}},{\"id\":\"3030fafb\",\"type\":\"number_card\",\"data\":{\"number_card_name\":\"Total Issued Books\",\"col\":3}},{\"id\":\"2ef82362\",\"type\":\"number_card\",\"data\":{\"number_card_name\":\"Overdue Books\",\"col\":3}},{\"id\":\"9dc8013c\",\"type\":\"header\",\"data\":{\"text\":\"<span class=\\\"h4\\\">Membership Overview</span>\",\"col\":12}},{\"id\":\"e48372f7\",\"type\":\"number_card\",\"data\":{\"number_card_name\":\"Total Members\",\"col\":3}},{\"id\":\"989c4aa6\",\"type\":\"number_card\",\"data\":{\"number_card_name\":\"Active Memberships\",\"col\":3}},{\"id\":\"7dbc0111\",\"type\":\"number_card\",\"data\":{\"number_card_name\":\"Expired Memberships\",\"col\":3}},{\"id\":\"8132f2f2\",\"type\":\"number_card\",\"data\":{\"number_card_name\":\"Pending Reservations\",\"col\":3}},{\"id\":\"19723d23\",\"type\":\"header\",\"data\":{\"text\":\"<span class=\\\"h4\\\">Analytics</span>\",\"col\":12}},{\"id\":\"200f8d60\",\"type\":\"chart\",\"data\":{\"chart_name\":\"Membership Status\",\"col\":6}},{\"id\":\"3d93f763\",\"type\":\"chart\",\"data\":{\"chart_name\":\"Monthly Transaction Trend\",\"col\":6}},{\"id\":\"80295b02\",\"type\":\"header\",\"data\":{\"text\":\"<span class=\\\"h4\\\">Reports</span>\",\"col\":12}},{\"id\":\"14167137\",\"type\":\"shortcut\",\"data\":{\"shortcut_name\":\"Pending Reservations Report\",\"col\":3}},{\"id\":\"aae10b23\",\"type\":\"shortcut\",\"data\":{\"shortcut_name\":\"Books to Issue Report\",\"col\":3}},{\"id\":\"1c3d9c7c\",\"type\":\"shortcut\",\"data\":{\"shortcut_name\":\"Overdue Books Report\",\"col\":3}},{\"id\":\"77bf53f9\",\"type\":\"shortcut\",\"data\":{\"shortcut_name\":\"Active Memberships Report\",\"col\":3}},{\"id\":\"c88cd377\",\"type\":\"shortcut\",\"data\":{\"shortcut_name\":\"Expired Memberships Report\",\"col\":3}},{\"id\":\"57b22d9b\",\"type\":\"shortcut\",\"data\":{\"shortcut_name\":\"Membership Expiring Soon Report\",\"col\":3}},{\"id\":\"d51877c0\",\"type\":\"shortcut\",\"data\":{\"shortcut_name\":\"Library Master Summary Report\",\"col\":3}},{\"id\":\"211bc5a1\",\"type\":\"shortcut\",\"data\":{\"shortcut_name\":\"Website\",\"col\":3}}]",
  "creation": "2026-06-12 17:55:53.584944",
  "custom_blocks": [],
  "docstatus": 0,
@@ -40,6 +40,10 @@
    "number_card_name": "Total Issued Books"
   },
   {
+   "label": "Overdue Books",
+   "number_card_name": "Overdue Books"
+  },
+  {
    "label": "Total Members",
    "number_card_name": "Total Members"
   },
@@ -54,10 +58,6 @@
   {
    "label": "Pending Reservations",
    "number_card_name": "Pending Reservations"
-  },
-  {
-   "label": "Overdue Books",
-   "number_card_name": "Overdue Books"
   }
  ],
  "owner": "Administrator",
@@ -125,25 +125,25 @@
   },
   {
    "doc_view": "",
-   "label": "\ud83d\udcda Add Book",
+   "label": "📚 Add Book",
    "type": "URL",
    "url": "/app/article/new-article-1"
   },
   {
    "doc_view": "",
-   "label": "\ud83d\udc64 Add Member",
+   "label": "👤 Add Member",
    "type": "URL",
    "url": "/app/library-member/new-library-member-1"
   },
   {
    "doc_view": "",
-   "label": "\ud83c\udfab Add Membership",
+   "label": "🎫 Add Membership",
    "type": "URL",
    "url": "/app/library-membership/new-library-membership-1"
   },
   {
    "doc_view": "",
-   "label": "\ud83d\udd04 Issue / Return Book",
+   "label": "🔄 Issue / Return Book",
    "type": "URL",
    "url": "/app/library-transaction/new-library-transaction-1"
   }

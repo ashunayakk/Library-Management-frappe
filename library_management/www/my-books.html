@@ -1,0 +1,240 @@
+{% extends "templates/web.html" %}
+{% block title %}My Books{% endblock %}
+{% block page_content %}
+
+<style>
+    .portal-container { max-width: 1000px; margin: 30px auto; padding: 0 20px; }
+
+    .member-card {
+        background: linear-gradient(135deg, #667eea, #764ba2);
+        color: white; border-radius: 15px;
+        padding: 25px 30px; margin-bottom: 30px;
+        display: flex; justify-content: space-between;
+        align-items: center; flex-wrap: wrap; gap: 15px;
+    }
+    .member-card h2 { margin: 0 0 5px; font-size: 22px; }
+    .member-card p { margin: 3px 0; opacity: 0.9; font-size: 14px; }
+    .membership-badge {
+        padding: 8px 20px; border-radius: 20px;
+        font-weight: bold; font-size: 13px;
+    }
+    .badge-active { background: #d4edda; color: #155724; }
+    .badge-expired { background: #f8d7da; color: #721c24; }
+
+    .section-title {
+        font-size: 18px; color: #2c3e50;
+        margin: 30px 0 15px; font-weight: bold;
+        border-left: 4px solid #667eea; padding-left: 10px;
+    }
+
+    table { width: 100%; border-collapse: collapse; background: white;
+            border-radius: 12px; overflow: hidden;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.07); margin-bottom: 10px; }
+    thead tr { background: #2c3e50; color: white; }
+    th, td { padding: 11px 14px; text-align: left; font-size: 13px; }
+    tbody tr:nth-child(even) { background: #f8f9fa; }
+    tbody tr:hover { background: #e8f4fd; }
+
+    .badge { padding: 3px 10px; border-radius: 15px; font-size: 11px; font-weight: bold; }
+    .badge-overdue { background: #f8d7da; color: #721c24; }
+    .badge-due-soon { background: #fff3cd; color: #856404; }
+    .badge-ok { background: #d4edda; color: #155724; }
+    .badge-pending { background: #fff3cd; color: #856404; }
+    .badge-ready { background: #d4edda; color: #155724; }
+    .badge-issue { background: #d1ecf1; color: #0c5460; }
+    .badge-return { background: #e2e3e5; color: #383d41; }
+
+    .fine-alert {
+        background: #f8d7da; color: #721c24;
+        padding: 12px 20px; border-radius: 10px;
+        margin-bottom: 20px; font-weight: bold;
+    }
+    .empty-state {
+        text-align: center; padding: 30px; color: #999;
+        background: white; border-radius: 12px;
+        box-shadow: 0 2px 10px rgba(0,0,0,0.07);
+    }
+    .no-member-box {
+        text-align: center; padding: 50px 20px;
+        background: white; border-radius: 15px;
+        box-shadow: 0 4px 15px rgba(0,0,0,0.08);
+    }
+    .no-member-box h3 { color: #2c3e50; margin-bottom: 10px; }
+    .no-member-box p { color: #666; margin-bottom: 20px; }
+    .btn-primary {
+        background: linear-gradient(135deg, #667eea, #764ba2);
+        color: white; padding: 10px 25px;
+        border-radius: 20px; text-decoration: none;
+        font-weight: bold; display: inline-block;
+    }
+</style>
+
+<div class="portal-container">
+
+{% if no_member %}
+<div class="no-member-box">
+    <h3>No Library Member Account Found</h3>
+    <p>Your login is not linked to a Library Member record. Please register to get started.</p>
+    <a href="/register" class="btn-primary">Register Now</a>
+</div>
+
+{% else %}
+
+<!-- Member Info Card -->
+<div class="member-card">
+    <div>
+        <h2>📚 {{ member.full_name }}</h2>
+        <p>📧 {{ member.email }}</p>
+        {% if member.phone %}<p>📞 {{ member.phone }}</p>{% endif %}
+    </div>
+    <div style="text-align:right;">
+        {% if membership_active %}
+        <span class="membership-badge badge-active">✅ Active Member</span>
+        <p style="margin-top:8px; font-size:13px; opacity:0.9;">
+            Expires: <strong>{{ frappe.utils.formatdate(membership_expiry) }}</strong>
+        </p>
+        {% else %}
+        <span class="membership-badge badge-expired">❌ Membership Expired</span>
+        {% if membership_expiry %}
+        <p style="margin-top:8px; font-size:13px; opacity:0.9;">
+            Expired: {{ frappe.utils.formatdate(membership_expiry) }}
+        </p>
+        {% endif %}
+        <p style="margin-top:5px; font-size:12px;">Visit the library desk to renew.</p>
+        {% endif %}
+    </div>
+</div>
+
+<!-- Fine Alert -->
+{% if total_fine_due > 0 %}
+<div class="fine-alert">
+    ⚠️ You have an outstanding fine of <strong>{{ frappe.utils.fmt_money(total_fine_due) }}</strong>. Please clear it at the library desk.
+</div>
+{% endif %}
+
+<!-- Currently Issued Books -->
+<div class="section-title">📖 Currently Issued Books</div>
+{% if issued_books %}
+<table>
+    <thead>
+        <tr>
+            <th>Book</th>
+            <th>Issued On</th>
+            <th>Due Date</th>
+            <th>Status</th>
+            <th>Fine Due</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for book in issued_books %}
+        <tr>
+            <td><strong>{{ book.article }}</strong></td>
+            <td>{{ frappe.utils.formatdate(book.issue_date) }}</td>
+            <td>{{ frappe.utils.formatdate(book.due_date) }}</td>
+            <td>
+                {% if book.days_overdue > 0 %}
+                <span class="badge badge-overdue">Overdue by {{ book.days_overdue }} days</span>
+                {% elif (book.due_date | string) and frappe.utils.date_diff(book.due_date, frappe.utils.today()) <= 3 %}
+                <span class="badge badge-due-soon">Due Soon</span>
+                {% else %}
+                <span class="badge badge-ok">On Time</span>
+                {% endif %}
+            </td>
+            <td>
+                {% if book.fine_due > 0 %}
+                <strong style="color:#721c24;">{{ frappe.utils.fmt_money(book.fine_due) }}</strong>
+                {% else %}
+                <span style="color:#999;">—</span>
+                {% endif %}
+            </td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
+{% else %}
+<div class="empty-state">No books currently issued.</div>
+{% endif %}
+
+<!-- Pending Reservations -->
+<div class="section-title">📌 Your Reservations</div>
+{% if reservations %}
+<table>
+    <thead>
+        <tr>
+            <th>Book</th>
+            <th>Reserved On</th>
+            <th>Days Waiting</th>
+            <th>Status</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for res in reservations %}
+        <tr>
+            <td><strong>{{ res.article }}</strong></td>
+            <td>{{ frappe.utils.formatdate(res.reserved_on) }}</td>
+            <td>{{ res.days_waiting }}</td>
+            <td>
+                {% if res.ready_to_issue %}
+                <span class="badge badge-ready">✅ Ready — Collect Now!</span>
+                {% else %}
+                <span class="badge badge-pending">⏳ In Queue</span>
+                {% endif %}
+            </td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
+{% else %}
+<div class="empty-state">No pending reservations.</div>
+{% endif %}
+
+<!-- Transaction History -->
+<div class="section-title">📋 Recent Transaction History</div>
+{% if past_transactions %}
+<table>
+    <thead>
+        <tr>
+            <th>Transaction</th>
+            <th>Book</th>
+            <th>Type</th>
+            <th>Date</th>
+            <th>Fine</th>
+            <th>Fine Paid</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for txn in past_transactions %}
+        <tr>
+            <td style="color:#667eea;">{{ txn.transaction_id }}</td>
+            <td>{{ txn.article }}</td>
+            <td>
+                {% if txn.type == 'Issue' %}
+                <span class="badge badge-issue">Issue</span>
+                {% else %}
+                <span class="badge badge-return">Return</span>
+                {% endif %}
+            </td>
+            <td>{{ frappe.utils.formatdate(txn.date) }}</td>
+            <td>
+                {% if txn.fine_amount %}
+                {{ frappe.utils.fmt_money(txn.fine_amount) }}
+                {% else %}—{% endif %}
+            </td>
+            <td>
+                {% if txn.fine_amount %}
+                    {% if txn.fine_paid %}✅{% else %}❌{% endif %}
+                {% else %}—{% endif %}
+            </td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
+<p style="text-align:center; color:#999; font-size:13px; margin-top:8px;">Showing last 20 transactions.</p>
+{% else %}
+<div class="empty-state">No transaction history yet.</div>
+{% endif %}
+
+{% endif %}
+</div>
+
+{% endblock %}

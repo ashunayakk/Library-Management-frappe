@@ -2,6 +2,7 @@ import frappe
 from frappe.website.website_generator import WebsiteGenerator
 from frappe.utils import getdate, add_days, date_diff
 
+
 class LibraryTransaction(WebsiteGenerator):
 	def get_route(self):
 		return f"transactions/{self.name}"
@@ -17,14 +18,13 @@ class LibraryTransaction(WebsiteGenerator):
 		if not self.library_member:
 			frappe.throw(frappe._("Please select a Library Member."))
 
-		# Set due date for Issue
 		if self.type == "Issue" and not self.due_date:
-			self.due_date = add_days(self.date, 15)
+			loan_days = frappe.db.get_single_value("Library Settings", "loan_period_days") or 15
+			self.due_date = add_days(self.date, loan_days)
 
 		self.validate_membership()
 
 	def validate_membership(self):
-		# Check if member exists and has an active membership
 		member_expiry = frappe.db.get_value("Library Member", self.library_member, "membership_expiry")
 
 		if not member_expiry or getdate(member_expiry) < getdate(self.date):
@@ -39,7 +39,6 @@ class LibraryTransaction(WebsiteGenerator):
 			self.calculate_fine()
 
 	def validate_reservation(self):
-		# Check if there are any pending reservations for this article
 		reservations = frappe.get_all(
 			"Books Reservation",
 			filters={"article": self.article, "status": "Pending"},
@@ -47,20 +46,14 @@ class LibraryTransaction(WebsiteGenerator):
 			order_by="creation asc"
 		)
 
-		if reservations:
-			# Get the first person in the queue
-			first_in_queue = reservations[0]
-
-			# If the current member is NOT the first person in the queue, block the transaction
-			if first_in_queue.member_name != self.library_member:
-				frappe.throw(
-					frappe._("Article {0} is reserved by {1}. They are first in the queue!").format(
-						self.article, first_in_queue.member_name
-					)
+		if reservations and reservations[0].member_name != self.library_member:
+			frappe.throw(
+				frappe._("Article {0} is reserved by {1}. They are first in the queue!").format(
+					self.article, reservations[0].member_name
 				)
+			)
 
 	def on_submit(self):
-		# Update Article status
 		if self.type == "Issue":
 			frappe.db.set_value("Article", self.article, "status", "Issued")
 			self.update_reservation_status()
@@ -68,7 +61,6 @@ class LibraryTransaction(WebsiteGenerator):
 			self.handle_return()
 
 	def handle_return(self):
-		# Check if there are pending reservations
 		reservations = frappe.get_all(
 			"Books Reservation",
 			filters={"article": self.article, "status": "Pending"},
@@ -77,23 +69,19 @@ class LibraryTransaction(WebsiteGenerator):
 		)
 
 		if reservations:
-			# If someone is waiting, set status to Reserved
 			frappe.db.set_value("Article", self.article, "status", "Reserved")
 			self.notify_next_in_queue(reservations[0])
 		else:
-			# No one is waiting, article is Available
 			frappe.db.set_value("Article", self.article, "status", "Available")
 
 	def notify_next_in_queue(self, reservation):
-		# Set notification date and ready_to_issue flag
 		frappe.db.set_value("Books Reservation", reservation.name, {
 			"notification_date": frappe.utils.today(),
 			"ready_to_issue": 1
 		})
 
-		# Show alert to Librarian
 		frappe.msgprint(
-			frappe._("📌 ALERT: This book '{0}' is reserved by {1} ({2}). Please issue it to them now!")
+			frappe._("ALERT: Book '{0}' is reserved by {1} ({2}). Please issue it to them now!")
 			.format(self.article, reservation.member_name, reservation.member_email),
 			indicator="orange",
 			alert=True
@@ -102,11 +90,13 @@ class LibraryTransaction(WebsiteGenerator):
 		frappe.sendmail(
 			recipients=[reservation.member_email],
 			subject=frappe._("Article Available: {0}").format(self.article),
-			message=frappe._("Hi {0},<br><br>The article <b>{1}</b> you reserved is now available for pickup. Please collect it within 48 hours.").format(reservation.member_name, self.article)
+			message=frappe._(
+				"Hi {0},<br><br>The article <b>{1}</b> you reserved is now available for pickup. "
+				"Please collect it within 48 hours."
+			).format(reservation.member_name, self.article)
 		)
 
 	def update_reservation_status(self):
-		# Mark the reservation as 'Confirmed' if it exists for this member and article
 		reservation = frappe.db.get_value(
 			"Books Reservation",
 			{"article": self.article, "member_name": self.library_member, "status": "Pending"},
@@ -115,7 +105,7 @@ class LibraryTransaction(WebsiteGenerator):
 		if reservation:
 			frappe.db.set_value("Books Reservation", reservation, {
 				"status": "Confirmed",
-				"ready_to_issue": 0 # Reset flag once issued
+				"ready_to_issue": 0
 			})
 
 	def validate_article_available(self):
@@ -134,10 +124,10 @@ class LibraryTransaction(WebsiteGenerator):
 
 		if getdate(self.date) > getdate(self.due_date):
 			late_days = date_diff(self.date, self.due_date)
-			self.fine_amount = late_days * 10 # 10 units per day
+			fine_per_day = frappe.db.get_single_value("Library Settings", "fine_per_day") or 10
+			self.fine_amount = late_days * fine_per_day
 			frappe.msgprint(
-				frappe._("Late return! Fine amount of {0} has been calculated for {1} days delay.")
+				frappe._("Late return! Fine of {0} calculated for {1} days delay.")
 				.format(self.fine_amount, late_days),
 				indicator="orange"
 			)
-

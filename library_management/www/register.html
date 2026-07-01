@@ -74,9 +74,13 @@
 
         {% if success %}
         <div class="success-msg">
-            🎉 Registration Successful! Welcome {{ member_name }}!
-            <br><br>
-            <a href="/articles" style="color: #155724;">Browse Books →</a>
+            🎉 Welcome, {{ member_name }}! Your registration is complete.
+        </div>
+        <div style="background:#fff3cd; color:#856404; padding:15px; border-radius:10px; margin-bottom:20px; font-size:14px;">
+            <strong>Next step:</strong> Visit the library desk to activate your membership. Once activated, you'll be able to borrow and reserve books.
+        </div>
+        <div style="text-align:center; margin-top:10px;">
+            <a href="/articles" style="background:linear-gradient(135deg,#667eea,#764ba2); color:white; padding:10px 25px; border-radius:20px; text-decoration:none; font-weight:bold;">Browse Books →</a>
         </div>
         {% else %}
 
@@ -85,6 +89,7 @@
         {% endif %}
 
         <form method="POST" action="/register">
+            <input type="hidden" name="csrf_token" value="{{ csrf_token }}">
             <div class="form-group">
                 <label>First Name *</label>
                 <input type="text" name="first_name"

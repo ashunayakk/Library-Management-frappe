@@ -1,0 +1,56 @@
+{
+ "actions": [],
+ "creation": "2026-06-30 00:00:00.000000",
+ "doctype": "DocType",
+ "engine": "InnoDB",
+ "field_order": [
+  "fine_per_day",
+  "loan_period_days"
+ ],
+ "fields": [
+  {
+   "default": "10",
+   "description": "Fine charged per day for late returns",
+   "fieldname": "fine_per_day",
+   "fieldtype": "Currency",
+   "label": "Fine Per Day",
+   "reqd": 1
+  },
+  {
+   "default": "15",
+   "description": "Number of days a member can borrow a book before it is due",
+   "fieldname": "loan_period_days",
+   "fieldtype": "Int",
+   "label": "Loan Period (Days)",
+   "reqd": 1
+  }
+ ],
+ "issingle": 1,
+ "links": [],
+ "modified": "2026-06-30 00:00:00.000000",
+ "modified_by": "Administrator",
+ "module": "Library Management",
+ "name": "Library Settings",
+ "owner": "Administrator",
+ "permissions": [
+  {
+   "create": 1,
+   "delete": 1,
+   "email": 1,
+   "export": 1,
+   "print": 1,
+   "read": 1,
+   "report": 1,
+   "role": "System Manager",
+   "share": 1,
+   "write": 1
+  },
+  {
+   "read": 1,
+   "role": "Librarian",
+   "write": 1
+  }
+ ],
+ "sort_field": "modified",
+ "sort_order": "DESC"
+}
