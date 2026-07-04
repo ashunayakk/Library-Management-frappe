@@ -5,14 +5,24 @@ import frappe
 from frappe.model.document import Document
 
 class LibraryMember(Document):
+	def validate(self):
+		if self.email:
+			self.email = self.email.strip().lower()
+
 	def after_insert(self):
 		self.create_user()
 
 	def create_user(self):
 		if frappe.db.exists("User", self.email):
-			frappe.msgprint(frappe._("User with email {0} already exists").format(self.email))
-			# Link existing user if found
-			self.db_set("user", self.email)
+			# An account with this email already exists. Do not silently link an
+			# unverified Library Member to it - that would let anyone claim an
+			# existing account just by knowing its email address.
+			frappe.msgprint(
+				frappe._(
+					"A user with email {0} already exists. Please ask them to link "
+					"this Library Member from their User record if needed."
+				).format(self.email)
+			)
 			return
 
 		user = frappe.get_doc({

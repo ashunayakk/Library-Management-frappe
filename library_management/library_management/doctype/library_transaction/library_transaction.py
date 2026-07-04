@@ -2,6 +2,8 @@ import frappe
 from frappe.website.website_generator import WebsiteGenerator
 from frappe.utils import getdate, add_days, date_diff
 
+from library_management.library_management.utils import get_member_full_name
+
 
 class LibraryTransaction(WebsiteGenerator):
 	def get_route(self):
@@ -60,6 +62,50 @@ class LibraryTransaction(WebsiteGenerator):
 		elif self.type == "Return":
 			self.handle_return()
 
+	def on_cancel(self):
+		if self.type == "Issue":
+			self.revert_issue()
+		elif self.type == "Return":
+			self.revert_return()
+
+	def revert_issue(self):
+		# Put back into the queue whatever reservation this issue confirmed
+		reservation = frappe.db.get_value(
+			"Books Reservation",
+			{"article": self.article, "member_name": self.library_member, "status": "Confirmed"},
+			"name",
+		)
+		if reservation:
+			frappe.db.set_value("Books Reservation", reservation, "status", "Pending")
+
+		self.restore_article_availability()
+
+	def revert_return(self):
+		# Undo whatever handle_return() did: the book is issued again
+		frappe.db.set_value("Article", self.article, "status", "Issued")
+
+		notified = frappe.get_all(
+			"Books Reservation",
+			filters={"article": self.article, "status": "Pending", "ready_to_issue": 1},
+			fields=["name"],
+			order_by="creation asc",
+			limit_page_length=1,
+		)
+		if notified:
+			frappe.db.set_value(
+				"Books Reservation", notified[0].name, {"notification_date": None, "ready_to_issue": 0}
+			)
+
+	def restore_article_availability(self):
+		pending = frappe.get_all(
+			"Books Reservation",
+			filters={"article": self.article, "status": "Pending"},
+			fields=["name"],
+			order_by="creation asc",
+			limit_page_length=1,
+		)
+		frappe.db.set_value("Article", self.article, "status", "Reserved" if pending else "Available")
+
 	def handle_return(self):
 		reservations = frappe.get_all(
 			"Books Reservation",
@@ -80,9 +126,11 @@ class LibraryTransaction(WebsiteGenerator):
 			"ready_to_issue": 1
 		})
 
+		member_full_name = get_member_full_name(reservation.member_name)
+
 		frappe.msgprint(
 			frappe._("ALERT: Book '{0}' is reserved by {1} ({2}). Please issue it to them now!")
-			.format(self.article, reservation.member_name, reservation.member_email),
+			.format(self.article, member_full_name, reservation.member_email),
 			indicator="orange",
 			alert=True
 		)
@@ -93,7 +141,7 @@ class LibraryTransaction(WebsiteGenerator):
 			message=frappe._(
 				"Hi {0},<br><br>The article <b>{1}</b> you reserved is now available for pickup. "
 				"Please collect it within 48 hours."
-			).format(reservation.member_name, self.article)
+			).format(member_full_name, self.article)
 		)
 
 	def update_reservation_status(self):

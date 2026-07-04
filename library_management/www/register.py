@@ -1,4 +1,5 @@
 import frappe
+from frappe.utils import validate_email_address
 
 no_cache = 1
 
@@ -12,7 +13,7 @@ def get_context(context):
 		try:
 			first_name = frappe.form_dict.get("first_name", "").strip()
 			last_name = frappe.form_dict.get("last_name", "").strip()
-			email = frappe.form_dict.get("email", "").strip()
+			email = frappe.form_dict.get("email", "").strip().lower()
 			country_code = frappe.form_dict.get("country_code", "")
 			phone_no = frappe.form_dict.get("phone", "")
 			full_phone = f"{country_code}{phone_no}"
@@ -21,8 +22,14 @@ def get_context(context):
 				context.error = "First Name and Email are required."
 				return
 
+			validate_email_address(email, throw=True)
+
 			if frappe.db.exists("Library Member", {"email": email}):
 				context.error = "This email is already registered."
+				return
+
+			if frappe.db.exists("User", email):
+				context.error = "An account with this email already exists. Please log in instead."
 				return
 
 			member = frappe.new_doc("Library Member")
@@ -46,6 +53,8 @@ def get_context(context):
 				)
 			)
 
-		except Exception as e:
+		except frappe.ValidationError:
+			context.error = "Please enter a valid email address."
+		except Exception:
 			frappe.log_error(frappe.get_traceback(), "Library Registration Error")
-			context.error = f"Registration failed: {str(e)}"
+			context.error = "Registration failed. Please try again later."

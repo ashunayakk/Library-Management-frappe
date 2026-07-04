@@ -1,6 +1,8 @@
 import frappe
 from frappe.utils import today, add_days
 
+from library_management.library_management.utils import get_member_full_name
+
 
 def check_expired_memberships():
 	expired_memberships = frappe.get_all(
@@ -14,13 +16,16 @@ def check_expired_memberships():
 	)
 
 	for m in expired_memberships:
-		frappe.db.set_value("Library Membership", m.name, "membership_status", "Expired")
-		member_user = frappe.db.get_value("Library Member", m.library_member, "user")
-		if member_user and frappe.db.exists("User", member_user):
-			frappe.get_doc("User", member_user).remove_roles("Library Member")
-
-	if expired_memberships:
-		frappe.db.commit()
+		try:
+			frappe.db.set_value("Library Membership", m.name, "membership_status", "Expired")
+			frappe.db.set_value("Library Member", m.library_member, "membership_expiry", None)
+			member_user = frappe.db.get_value("Library Member", m.library_member, "user")
+			if member_user and frappe.db.exists("User", member_user):
+				frappe.get_doc("User", member_user).remove_roles("Library Member")
+			frappe.db.commit()
+		except Exception:
+			frappe.db.rollback()
+			frappe.log_error(frappe.get_traceback(), f"Failed to expire Library Membership {m.name}")
 
 
 def cancel_expired_reservations():
@@ -37,11 +42,13 @@ def cancel_expired_reservations():
 	)
 
 	for res in expired_reservations:
-		frappe.db.set_value("Books Reservation", res.name, "status", "Cancelled")
-		handle_next_reservation(res.article)
-
-	if expired_reservations:
-		frappe.db.commit()
+		try:
+			frappe.db.set_value("Books Reservation", res.name, "status", "Cancelled")
+			handle_next_reservation(res.article)
+			frappe.db.commit()
+		except Exception:
+			frappe.db.rollback()
+			frappe.log_error(frappe.get_traceback(), f"Failed to cancel Books Reservation {res.name}")
 
 
 def handle_next_reservation(article):
@@ -63,7 +70,7 @@ def handle_next_reservation(article):
 			message=frappe._(
 				"Hi {0},<br><br>The article <b>{1}</b> is now available for you. "
 				"Please collect it within 48 hours."
-			).format(next_res.member_name, article)
+			).format(get_member_full_name(next_res.member_name), article)
 		)
 	else:
 		frappe.db.set_value("Article", article, "status", "Available")

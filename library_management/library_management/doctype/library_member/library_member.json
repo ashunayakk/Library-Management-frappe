@@ -3,7 +3,6 @@
  "allow_rename": 1,
  "autoname": "M.###.",
  "creation": "2026-06-03 10:04:10.903802",
- "custom": 1,
  "doctype": "DocType",
  "engine": "InnoDB",
  "field_order": [
@@ -85,6 +84,17 @@
    "read": 1,
    "report": 1,
    "role": "System Manager",
+   "share": 1,
+   "write": 1
+  },
+  {
+   "create": 1,
+   "email": 1,
+   "export": 1,
+   "print": 1,
+   "read": 1,
+   "report": 1,
+   "role": "Librarian",
    "share": 1,
    "write": 1
   },
